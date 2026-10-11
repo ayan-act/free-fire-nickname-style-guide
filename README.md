@@ -1,42 +1,53 @@
-# Unicode nickname compatibility guide
+# Free Fire Nickname Style Guide
 
-Unicode nickname styling is often called a “font”, but copied names are text characters. This guide explains what changes when letters, symbols, and emoji are added to a gaming nickname. It includes a small local character inspector for checking the text you intend to paste.
+A practical Unicode reference for players who want a readable, copyable gaming nickname. It includes a [local character inspector](unicode-inspector.html) that exposes code points, combining marks, and invisible characters in a draft name.
 
-For creating a name, use the [FF Name Style generator by FF Bio Code](https://ffbiocodes.com/ff-name-style/). This repository is a companion reference, not a mirror of that page or an official Free Fire guide.
+**[Create a nickname with FF Name Style](https://ffbiocodes.com/ff-name-style/)** · [Understand Unicode name fonts](https://ffbiocodes.com/free-fire-name-fonts-explained/) · [Browse name ideas](https://ffbiocodes.com/100-cool-gaming-names-for-ff-player-in-2026/)
 
-## Why a short name may still fail
+This repository is an educational companion to the live FF Bio Code generator, not a mirror of the website or an official Free Fire validation service.
 
-There are several ways to measure text:
+## Why Unicode matters
 
-| Measure | Example: `A✿` | What it tells you |
+What people call a “name font” is often a different set of Unicode characters. A pasted nickname can look different on another device, and a game can reject characters or spacing even when they render in this browser.
+
+There are several useful ways to count a draft:
+
+| Measure | Example: `A✿` | Meaning |
 | --- | --- | --- |
 | UTF-16 code units | 2 | JavaScript string storage length |
-| Unicode code points | 2 | Number of encoded characters |
+| Unicode code points | 2 | Encoded characters |
 | Grapheme clusters | 2 | Approximate user-perceived characters |
 
-These numbers can differ. For example, `👨‍👩‍👧` appears as one family emoji but contains multiple code points joined together. Combining marks can also make one visible character from more than one code point. A game's actual limit and permitted character set are determined by the current game client and server, so no local counter can promise acceptance.
+These values can differ. `👨‍👩‍👧` is displayed as one family emoji on supported devices but contains several code points and joiners. A combining mark can also add a code point without adding a separate visible letter. No local counter can predict the current game's accepted character set or name availability.
 
-## Practical checks
+## Inspect a draft
 
-1. Start with a readable base name. Add one decorative element at a time.
-2. Use the [character inspector](unicode-inspector.html) to see code points and invisible or combining characters in a draft.
-3. Paste the result into the game's name field. Check rendering, accepted length, and availability there before completing a name change.
-4. If the name is rejected, remove an emoji, joiner, invisible space, or elaborate frame and retry.
+1. Download or open [`unicode-inspector.html`](unicode-inspector.html) in a modern browser.
+2. Paste a draft nickname. The table shows each code point and flags common invisible characters, whitespace, and combining marks.
+3. Simplify anything that harms readability. Paste the final text into the destination app and check it there before confirming a name change.
 
-The inspector runs locally in the browser. It does not upload your text or connect to a game account. It reports text structure only; it does not validate Free Fire names.
+The inspector runs entirely in your browser. It does not upload names, ask for a game password, or connect to a game account. `Intl.Segmenter` is used for grapheme counts when the browser supports it; the other two counts remain available without it.
+
+The intended GitHub description, website, and topics are recorded in [`REPOSITORY_PROFILE.md`](REPOSITORY_PROFILE.md).
 
 ## Examples
 
 | Draft | Observation |
 | --- | --- |
-| `NOVA` | Simple Latin letters are easiest to read across devices. |
-| `ɴᴏᴠᴀ` | Small-cap-like characters are distinct Unicode code points. |
-| `༺NOVA༻` | Frames add characters that may count toward a limit. |
+| `NOVA` | Plain Latin letters are easy to recognize across devices. |
+| `ɴᴏᴠᴀ` | Small-cap-like letters are distinct Unicode characters. |
+| `༺NOVA༻` | A frame adds characters that may affect a length limit. |
 | `NO​VA` | This example contains a zero-width space between `O` and `V`; the inspector exposes it. |
 
-Compatibility varies by platform and may change. This repository intentionally avoids claiming that a particular name or symbol is guaranteed to work.
+## Related guides
 
-## Attribution
+- [FF Name Style generator](https://ffbiocodes.com/ff-name-style/) — create and copy a customized nickname.
+- [Free Fire name fonts explained](https://ffbiocodes.com/free-fire-name-fonts-explained/) — learn how the copied text works.
+- [100+ cool gaming names](https://ffbiocodes.com/100-cool-gaming-names-for-ff-player-in-2026/) — pick a base name before styling it.
+- [Alphabet-style gamer names and bio codes](https://ffbiocodes.com/free-fire-alphabet-style-name-bio-code-for-gamer/) — explore letter-based profile ideas.
+- [FF Bio Code resource map](https://github.com/ayan-act/ff-name-style-tool/blob/main/docs/RESOURCE_MAP.md) — browse the site's other public guides and information pages.
 
-Created as a companion resource for [FF Bio Code](https://ffbiocodes.com/ff-name-style/). Fan-made educational content; no affiliation with or endorsement by Garena or Free Fire.
+## Scope and attribution
+
+Character data and app rules may change. Treat this tool as a text inspector, not a game-rule checker. This independent fan-made resource accompanies [FF Bio Code](https://ffbiocodes.com/) and is not affiliated with or endorsed by Garena or Free Fire. Third-party names and trademarks belong to their respective owners. No open-source license is asserted here; contact the project owner before reusing the source outside this project.
 
