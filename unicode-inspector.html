@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Unicode Nickname Character Inspector</title>
+  <meta name="description" content="Inspect the Unicode code points, invisible characters, and length of a draft gaming nickname locally in your browser.">
+  <style>
+    :root { color-scheme: light dark; font: 16px/1.5 system-ui, sans-serif; }
+    body { max-width: 760px; margin: auto; padding: 24px; }
+    h1 { line-height: 1.15; }
+    textarea { box-sizing: border-box; width: 100%; min-height: 92px; padding: 12px; font: inherit; }
+    .counts { display: flex; flex-wrap: wrap; gap: 12px; margin: 18px 0; }
+    .counts span { border: 1px solid #8888; border-radius: 8px; padding: 8px 12px; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; text-align: left; }
+    th, td { border-bottom: 1px solid #8888; padding: 8px; }
+    code { overflow-wrap: anywhere; }
+    .note { border-left: 3px solid #7b72dd; padding-left: 14px; }
+    a { color: #6357c6; }
+    @media (prefers-color-scheme: dark) { a { color: #b9b1ff; } }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Unicode nickname character inspector</h1>
+    <p>Paste a draft name to inspect its characters. All analysis stays in this browser tab.</p>
+    <label for="nickname"><strong>Draft nickname</strong></label>
+    <textarea id="nickname" maxlength="500" spellcheck="false" autocomplete="off" placeholder="Try a nickname such as ༺NOVA༻"></textarea>
+    <div class="counts" role="status" aria-live="polite">
+      <span>UTF-16 units: <strong id="units">0</strong></span>
+      <span>Code points: <strong id="points">0</strong></span>
+      <span>Visible clusters: <strong id="clusters">0</strong></span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <caption>Characters in your draft</caption>
+        <thead><tr><th scope="col">Position</th><th scope="col">Character</th><th scope="col">Code point</th><th scope="col">Note</th></tr></thead>
+        <tbody id="characters"></tbody>
+      </table>
+    </div>
+    <p class="note">These counts do not predict whether a game accepts a nickname. Check the final name in the current game client before confirming a change.</p>
+    <p>Create styles with the <a href="https://ffbiocodes.com/ff-name-style/">FF Name Style generator</a>. This is a fan-made educational tool.</p>
+  </main>
+  <script>
+    (() => {
+      'use strict';
+      const input = document.getElementById('nickname');
+      const units = document.getElementById('units');
+      const points = document.getElementById('points');
+      const clusters = document.getElementById('clusters');
+      const body = document.getElementById('characters');
+      const segmenter = typeof Intl.Segmenter === 'function'
+        ? new Intl.Segmenter(undefined, { granularity: 'grapheme' }) : null;
+      const hidden = new Map([
+        [0x200B, 'zero-width space'], [0x200C, 'zero-width non-joiner'],
+        [0x200D, 'zero-width joiner'], [0x2060, 'word joiner'],
+        [0xFE0E, 'text presentation selector'], [0xFE0F, 'emoji presentation selector']
+      ]);
+
+      function inspect() {
+        const value = input.value;
+        const characters = Array.from(value);
+        units.textContent = String(value.length);
+        points.textContent = String(characters.length);
+        clusters.textContent = segmenter
+          ? String(Array.from(segmenter.segment(value)).length)
+          : 'Unavailable in this browser';
+
+        const rows = document.createDocumentFragment();
+        characters.forEach((character, position) => {
+          const code = character.codePointAt(0);
+          const row = document.createElement('tr');
+          const note = hidden.get(code) || (/\p{Mark}/u.test(character) ? 'combining mark' :
+            /\s/u.test(character) ? 'whitespace' : '');
+          const cells = [position + 1, note ? `[${note}]` : character,
+            `U+${code.toString(16).toUpperCase().padStart(4, '0')}`, note || '—'];
+          cells.forEach(value => {
+            const cell = document.createElement('td');
+            cell.textContent = String(value);
+            row.appendChild(cell);
+          });
+          rows.appendChild(row);
+        });
+        body.replaceChildren(rows);
+      }
+
+      input.addEventListener('input', inspect);
+      inspect();
+    })();
+  </script>
+</body>
+</html>
+
